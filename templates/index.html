@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            PNG to JPEG Converter
+        </title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Albert+Sans&display=swap" rel="stylesheet">
+        <style>
+            body {
+                font-family: 'Albert Sans', sans-serif;
+                background-color: #BFBFBF;
+            }
+            #download-converted {
+                margin-top: 10px;
+                font-size: 14px;
+                display: block;
+                color: #28a745;
+                width: 70%;
+                background: transparent;
+                border: 1px solid #28a745;
+            }
+            #download-converted:hover {
+                color: white;
+                background-color: #28a745;
+            }
+
+            .errors {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+            .errors__error {
+                color: #FF7373;
+                font-size: 13px;
+                font-weight: bold;
+                margin-top: 3px;
+            }
+            .preview-container {
+                background-color: #404040;
+                width: 400px;
+                height: 300px;
+            }
+            .preview {
+                width: 70%;
+                height: 70%;
+                background-size: contain;
+                background-repeat: no-repeat;
+                background-position: center center;
+                background-image: url('https://ik.imagekit.io/8mch78q847k/icons8-preview-image-64_kj735W4pm.png?updatedAt=1678541429553');
+            }
+
+            .file-container {
+                margin-bottom: 20px;
+            }
+
+            .form-and-privacy-policy-container {
+                padding: 10px 15px 15px;
+            }
+            .form-title {
+                font-weight: normal;
+                font-size: 30px;
+            }
+
+            .d-flex {
+                display: flex;
+            }
+
+            .flex-column {
+                flex-direction: column;
+            }
+
+            .justify-content-center {
+                justify-content: center;
+            }
+
+            .align-items-center {
+                align-items: center;
+            }
+
+            .mt-auto {
+                margin-top: auto;
+            }
+
+            .text-muted {
+                color: #8C8C8C;
+            }
+
+            .text-sm {
+                font-size: 12px;
+            }
+
+            .bg-white {
+                background-color: white;
+            }
+            .btn-success {
+                background-color: #28a745;
+                border: 1px solid #28a745;
+                color: white;
+            }
+
+            .w-100 {
+                width: 100%;
+            }
+
+            .btn, a.btn {
+                padding: 10px;
+                border-style: none;
+                border-radius: 5px;
+                cursor: pointer;
+                text-align: center;
+            }
+            a.btn {
+                display: inline-block;
+                color: white;
+                text-decoration: none;
+            }
+            .hide {
+                visibility: hidden !important;
+            }
+            .text-center {
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body class="d-flex flex-column align-items-center">
+        <h1>PNG TO JPEG CONVERTER</h1>
+        <div class="container d-flex">
+            <div class="bg-white d-flex flex-column form-and-privacy-policy-container">
+                <h2 class="text-center form-title">Upload Image</h2>
+                <form class="png-to-jpeg-form" enctype="multipart/form-data" method="post" action="/convert/png-to-jpeg">
+                    {{ png_to_jpeg_form.csrf_token }}
+                    <div class="file-container">
+                        {{  png_to_jpeg_form.png_image(accept="images/png") }}
+                        {%  if png_to_jpeg_form.png_image.errors %}
+                            <ul class="errors">
+                                {%  for error in png_to_jpeg_form.png_image.errors %}
+                                    <li class="errors__error">{{ error }}</li>
+                                {%  endfor %}
+                            </ul>
+                        {%  endif %}
+                    </div>
+                    <button class="btn btn-success w-100" type="submit">CONVERT</button>
+                </form>
+                <div class="privacy-policy mt-auto">
+                    <p class="text-muted text-sm">We don't store any of the uploaded and converted files</p>
+                </div>
+            </div>
+            <div class="preview-container d-flex flex-column align-items-center justify-content-center">
+                <div id="preview" class="preview" {% if out_image_uri %} style="background-image: url('{{ out_image_uri }}');" {% endif %}></div>
+                {%  if out_image_uri %}
+                    <a id="download-converted" class="btn btn-success download-converted" download="converted.jpeg" href="{{ out_image_uri }}">Download</a>
+                {% endif %}
+            </div>
+        </div>
+        <script>
+            const png_image_input = document.getElementById("png_image");
+            const preview = document.getElementById("preview");
+            const download_converted_button = document.getElementById("download-converted")
+            png_image_input.addEventListener("change", function(event) {
+                const png_image = event.target.files[0]
+                const image_uri = URL.createObjectURL(png_image);
+                download_converted_button.classList.add("hide");
+                preview.setAttribute("style", `background-image: url('${image_uri}')`);
+            });
+        </script>
+    </body>
+</html>
