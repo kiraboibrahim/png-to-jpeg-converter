@@ -5,7 +5,7 @@ from PIL import Image
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed, FileRequired, FileSize, FileField
 
-from .config import Config
+from .config.config import Config
 
 
 class PngToJpegConverterForm(FlaskForm):
